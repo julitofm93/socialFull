@@ -1,8 +1,6 @@
 import "./posts.scss"
 import Post from "../post/Post"
-import {
-  useQuery,
-} from '@tanstack/react-query'
+import { useQuery } from '@tanstack/react-query'
 import { makeRequest } from "../../axios"
 import { convertLength } from "@mui/material/styles/cssUtils"
 
