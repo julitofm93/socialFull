@@ -16,6 +16,7 @@ moment.locale('es')
 
 const Post = ({post}) => {
   const [commentOpen, setCommentOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const {currentUser} = useContext(AuthContext)
 
@@ -40,8 +41,24 @@ const Post = ({post}) => {
     }
   );
 
+  const deleteMutation = useMutation(
+    (postId) => {
+      return makeRequest.delete("/posts/"+postId)
+    },
+    {
+      onSuccess: () => {
+        // Invalidate and refetch
+        queryClient.invalidateQueries(["posts"]);
+      },
+    }
+  );
+
 const handleLike = ()=>{
   mutation.mutate(data.includes(currentUser.id))
+}
+
+const handleDelete = ()=>{
+  deleteMutation.mutate(post.id)
 }
 
   return (
@@ -60,7 +77,10 @@ const handleLike = ()=>{
               <span className="date">{ moment(post.createdAt).fromNow() }</span>
             </div>
           </div>
-          <MoreHorizIcon/>
+          <MoreHorizIcon onClick={()=>setMenuOpen(!menuOpen)}/>
+          {menuOpen && post.userId === currentUser.id && (
+            <button onClick={handleDelete}>delete</button>
+          )}
         </div>
         <div className="content">
           <p>{post.desc}</p>
